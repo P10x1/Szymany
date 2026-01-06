@@ -84,6 +84,7 @@ let currentPassenger = null;
 let selectedSeat = null;
 let selectedExtras = [];
 const seats = {};
+let qr = null;
 
 const passengers = [
   {id:1, name:"Jan", surname:"Kowalski", class:"eco", checked:false},
@@ -156,7 +157,7 @@ function startScanner(){
   const main = document.getElementById('main');
   main.innerHTML = '<div id="reader" style="width:320px"></div><p>Pozwól na dostęp do kamery i zeskanuj kod QR</p>';
 
-  const qr = new Html5Qrcode('reader');
+  qr = new Html5Qrcode('reader'); // ✅ TU JEST ZAMIANA
   qr.start(
     { facingMode: 'environment' },
     { fps: 10, qrbox: 250 },
@@ -275,22 +276,19 @@ function showBoardingPass(){
 }
 
 function finish(){
-  // oznacz pasażera jako odprawionego
   currentPassenger.checked = true;
 
-  // ZAPIS STANU DO localStorage
   localStorage.setItem('passengers', JSON.stringify(passengers));
   localStorage.setItem('seats', JSON.stringify(seats));
 
-  // reset bieżącego widoku
   currentPassenger = null;
   selectedSeat = null;
   selectedExtras = [];
 
-  document.getElementById('main').innerHTML = '';
-  document.getElementById('stepTitle').textContent = 'Zeskanuj dokument (QR)';
   renderPassengers();
+  startScanner(); // 🔥 KLUCZOWA LINIA
 }
+
 
 
 function showIdGenerator(){
